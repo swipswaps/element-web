@@ -19,15 +19,15 @@ limitations under the License.
 */
 
 import React from 'react';
-import * as sdk from 'matrix-react-sdk/src/index';
 import PlatformPeg from 'matrix-react-sdk/src/PlatformPeg';
 import { _td, newTranslatableError } from 'matrix-react-sdk/src/languageHandler';
 import AutoDiscoveryUtils from 'matrix-react-sdk/src/utils/AutoDiscoveryUtils';
 import { AutoDiscovery } from "matrix-js-sdk/src/autodiscovery";
 import * as Lifecycle from "matrix-react-sdk/src/Lifecycle";
-import SdkConfig, { parseSsoRedirectOptions } from "matrix-react-sdk/src/SdkConfig";
+import SdkConfig, { ConfigOptions, parseSsoRedirectOptions } from "matrix-react-sdk/src/SdkConfig";
 import { logger } from "matrix-js-sdk/src/logger";
 import { createClient } from "matrix-js-sdk/src/matrix";
+import MatrixChat from "matrix-react-sdk/src/components/structures/MatrixChat";
 
 import type MatrixChatType from "matrix-react-sdk/src/components/structures/MatrixChat";
 import { parseQs, parseQsFromFragment } from './url_utils';
@@ -182,7 +182,6 @@ export async function loadApp(fragParams: {}) {
 
     const defaultDeviceName = config['defaultDeviceDisplayName'] ?? platform.getDefaultDeviceDisplayName();
 
-    const MatrixChat = sdk.getComponent('structures.MatrixChat');
     return <MatrixChat
         onNewScreen={onNewScreen}
         makeRegistrationUrl={makeRegistrationUrl}
@@ -196,7 +195,7 @@ export async function loadApp(fragParams: {}) {
     />;
 }
 
-async function verifyServerConfig() {
+async function verifyServerConfig(): Promise<ConfigOptions> {
     let validatedConfig;
     try {
         logger.log("Verifying homeserver configuration");
